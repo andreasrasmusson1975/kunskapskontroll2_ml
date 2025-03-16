@@ -179,57 +179,6 @@ if st.sidebar.button("Stoppa Kameran"):
 frame_holder = st.empty()
 
 # Webcam loop
-"""
-if st.session_state.capture_active:
-    video_capture = cv2.VideoCapture(0)
-    video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
-    video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-
-    while st.session_state.capture_active:
-        success, img = video_capture.read()
-        if not success:
-            st.error("Failed to access webcam.")
-            break
-        
-        # Preprocess image
-        preprocessed_img = preprocess_image(img)
-        # Find the contours in the image
-        contours, _ = cv2.findContours(preprocessed_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        # Iterate over the contours
-        for contour in contours:
-            # Get a bounding box for the contour
-            x, y, w, h = cv2.boundingRect(contour)
-            # Ignore small or contours too close to the border
-            if x < image_border or x + w > 1040 or y < image_border or y + h > 680 or h < 72:
-                continue
-            
-            # Ectract the detected digit
-            cropped_img = preprocessed_img[y: y + h, x: x + w]
-            
-            # Apply padding to maintain aspect ratio
-            r = max(w, h)
-            y_pad = ((w - h) // 2 if w > h else 0) + r // 5
-            x_pad = ((h - w) // 2 if h > w else 0) + r // 5
-            cropped_img = cv2.copyMakeBorder(cropped_img, y_pad, y_pad, x_pad, x_pad, cv2.BORDER_CONSTANT, value=0)
-            
-            # Resize and center the digit
-            centered_img = resize_and_center(cropped_img)
-            # reshape for prediction
-            image_for_prediction = centered_img.reshape(1, -1)
-            # Make prediction
-            pred = model.predict(image_for_prediction)[0]
-            
-            # Draw bounding box and prediction text
-            cv2.rectangle(img, (x, y), (x + w, y + h), contour_color, 2)
-            cv2.putText(img, str(pred), (x + w // 5, y - h // 5), cv2.FONT_HERSHEY_SIMPLEX, 1, contour_color, 2)
-
-        # Convert to RGB for Streamlit
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        frame_holder.image(img_rgb, channels="RGB", use_column_width=True)
-
-    # Release the webcam when stopped
-    video_capture.release()
-    """
 webrtc_streamer(
     key="webcam",
     mode=WebRtcMode.SENDRECV,
