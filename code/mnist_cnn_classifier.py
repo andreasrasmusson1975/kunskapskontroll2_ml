@@ -354,7 +354,7 @@ class MnistCnnClassifier(BaseEstimator):
         MnistCnnClassifier
             The instance with the loaded model.
         """
-        self.model = load_model('../models/mnist_cnn.h5')
+        self.model = load_model('mnist_cnn.h5')
         return self
         
 
