@@ -205,7 +205,6 @@ ctx = webrtc_streamer(
     key="webcam",
     mode=WebRtcMode.SENDRECV,
     video_processor_factory=DigitRecognitionProcessor,
-    async_processing=True,
     media_stream_constraints={
         "video": {
             "width": {"min": 320, "ideal": 640, "max": 640},
