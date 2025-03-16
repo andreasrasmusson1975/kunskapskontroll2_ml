@@ -10,5 +10,5 @@ scikit_learn
 scikit_optimize
 scipy
 streamlit
-tensorflow
+tensorflow == 2.10.1
 tqdm
