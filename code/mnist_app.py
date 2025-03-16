@@ -213,6 +213,16 @@ ctx = webrtc_streamer(
         },
         "audio": False
     }
+    rtc_configuration={
+    "iceServers": [
+        {"urls": ["stun:stun.l.google.com:19302"]},
+        {
+            "urls": "turn:relay.backups.cz",
+            "username": "webrtc",
+            "credential": "webrtc"
+        }
+    ]
+}
 )
 
 
