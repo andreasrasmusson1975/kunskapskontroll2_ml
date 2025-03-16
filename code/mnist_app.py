@@ -45,22 +45,15 @@ from mnist_cnn_classifier import MnistCnnClassifier
 import os
 import streamlit as st
 
-# Get the directory where the script is running
-current_dir = os.path.dirname(__file__)
+# Get the directory of the current script
+code_dir = os.path.dirname(__file__)
 
-# List all subdirectories
-st.write("📂 **Subdirectories in Current Directory:**")
-st.write([d for d in os.listdir(current_dir) if os.path.isdir(os.path.join(current_dir, d))])
+# List files in the code directory
+files = os.listdir(code_dir)
 
-# List files in the subdirectory (replace 'models' with your actual folder name)
-subdir = "models"  # Change this to match your actual folder
-subdir_path = os.path.join(current_dir, subdir)
-
-if os.path.exists(subdir_path):
-    st.write(f"📂 **Files in `{subdir}` Folder:**")
-    st.write(os.listdir(subdir_path))
-else:
-    st.error(f"🚨 Subdirectory `{subdir}` NOT FOUND!")
+# Display in Streamlit
+st.write("📂 **Files in Code Directory:**")
+st.write(files)
 
 
 # Load the trained model
