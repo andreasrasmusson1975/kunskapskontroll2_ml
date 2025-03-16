@@ -347,7 +347,7 @@ class MnistCnnClassifier(BaseEstimator):
         self.model.save('../models/mnist_cnn.h5')
     def load_model(self):
         """
-        Loads a saved CNN model from '../models/mnist_cnn.h5'.
+        Loads a saved CNN model from 'mnist_cnn.h5'.
 
         Returns
         -------
