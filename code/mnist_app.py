@@ -131,6 +131,7 @@ def resize_and_center(img):
 
 class DigitRecognitionProcessor(VideoProcessorBase):
     def recv(self, frame):
+        st.write("✅ Processing frame...")  # Debugging: Check if frames are received
         img = frame.to_ndarray(format="bgr24")
 
         # Preprocess Image
