@@ -183,7 +183,22 @@ frame_holder = st.empty()
 webrtc_streamer(
     key="webcam",
     mode=WebRtcMode.SENDRECV,
-    media_stream_constraints={"video": True, "audio": False}  # No strict constraints
+    video_processor_factory=DigitRecognitionProcessor,
+    async_processing=True,  # Prevents blocking
+    rtc_configuration={
+        "iceServers": [
+            {"urls": ["stun:stun1.l.google.com:19302"]},  # Reliable Google STUN
+            {"urls": ["stun:stun.stunprotocol.org"]},  # Alternative STUN
+            {"urls": ["stun:stun.voipbuster.com"]},  # Extra STUN
+            {
+                "urls": "turn:relay.backups.cz",  # TURN relay for NAT/firewall traversal
+                "username": "webrtc",
+                "credential": "webrtc"
+            }
+        ],
+        "iceTransportPolicy": "relay"  # Force WebRTC to use relay mode (fixes strict network issues)
+    },
+    media_stream_constraints={"video": True, "audio": False}  # Disable audio for performance
 )
 
 
