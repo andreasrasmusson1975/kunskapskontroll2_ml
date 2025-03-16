@@ -48,17 +48,12 @@ import streamlit as st
 # Get the directory of the current script
 code_dir = os.path.dirname(__file__)
 
-# List files in the code directory
-files = os.listdir(code_dir)
-
-# Display in Streamlit
-st.write("📂 **Files in Code Directory:**")
-st.write(files)
+model_path = os.path.join(code_dir,'mnist_cnn.h5')
 
 
 # Load the trained model
 model = MnistCnnClassifier()
-model.load_model()
+model.load_model(model_path)
 
 # Constants
 kernel = np.ones((4, 4), np.uint8)

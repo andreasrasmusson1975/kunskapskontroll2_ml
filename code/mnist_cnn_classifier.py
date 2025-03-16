@@ -345,7 +345,7 @@ class MnistCnnClassifier(BaseEstimator):
         None
         """
         self.model.save('../models/mnist_cnn.h5')
-    def load_model(self):
+    def load_model(self,path):
         """
         Loads a saved CNN model from 'mnist_cnn.h5'.
 
@@ -354,7 +354,7 @@ class MnistCnnClassifier(BaseEstimator):
         MnistCnnClassifier
             The instance with the loaded model.
         """
-        self.model = load_model('/mount/src/kunskapskontroll2_ml/code/mnist_cnn.h5')
+        self.model = load_model(path)
         return self
         
 
