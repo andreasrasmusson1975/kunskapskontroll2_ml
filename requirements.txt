@@ -1,7 +1,7 @@
 setuptools
 joblib
 matplotlib
-numpy
+numpy<2.0.0
 opencv-python-headless
 pandas
 Pillow
