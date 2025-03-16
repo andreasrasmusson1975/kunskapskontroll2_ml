@@ -41,6 +41,7 @@ import numpy as np
 import joblib
 from PIL import Image
 from mnist_cnn_classifier import MnistCnnClassifier
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
 
 import os
 import streamlit as st
@@ -128,6 +129,36 @@ def resize_and_center(img):
     
     return centered_img
 
+class DigitRecognitionProcessor(VideoProcessorBase):
+    def recv(self, frame):
+        img = frame.to_ndarray(format="bgr24")
+
+        # Preprocess Image
+        preprocessed_img = preprocess_image(img)
+
+        # Find contours
+        contours, _ = cv2.findContours(preprocessed_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        for contour in contours:
+            x, y, w, h = cv2.boundingRect(contour)
+            if x < image_border or x + w > 1040 or y < image_border or y + h > 680 or h < 72:
+                continue  # Ignore small or edge-bound contours
+
+            # Extract and process digit
+            cropped_img = preprocessed_img[y:y + h, x:x + w]
+            cropped_img = cv2.copyMakeBorder(cropped_img, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=0)
+            centered_img = resize_and_center(cropped_img).reshape(1, -1)
+
+            # Predict the digit
+            pred = model.predict(centered_img)[0]
+
+            # Draw bounding box and prediction
+            cv2.rectangle(img, (x, y), (x + w, y + h), contour_color, 2)
+            cv2.putText(img, str(pred), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, contour_color, 2)
+
+        return frame.from_ndarray(img, format="bgr24")
+
+
+
 # Initialize Streamlit UI
 st.markdown("<h3 style='text-align: center;'>Sifferigenkänning i realtid</h3>", unsafe_allow_html=True)
 
@@ -148,6 +179,7 @@ if st.sidebar.button("Stoppa Kameran"):
 frame_holder = st.empty()
 
 # Webcam loop
+"""
 if st.session_state.capture_active:
     video_capture = cv2.VideoCapture(0)
     video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
@@ -197,4 +229,9 @@ if st.session_state.capture_active:
 
     # Release the webcam when stopped
     video_capture.release()
-    
+    """
+webrtc_streamer(
+    key="webcam",
+    mode=WebRtcMode.SENDRECV,
+    video_processor_factory=DigitRecognitionProcessor
+)
