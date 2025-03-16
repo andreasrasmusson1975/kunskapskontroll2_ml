@@ -15,23 +15,9 @@ Features
 - Uses a trained CNN model to predict the digit.
 - Displays the bounding box and predicted digit on the video stream.
 
-Usage
------
-Run the application with:
-    >>> streamlit run app.py
-
-Dependencies
-------------
-- OpenCV (`cv2`)
-- NumPy (`numpy`)
-- Streamlit (`streamlit`)
-- scikit-learn (`sklearn`)
-- PIL (`Pillow`)
-- A trained MNIST CNN classifier
-
 Example
 -------
->>> python -m streamlit run app.py
+>>> python -m streamlit run mnist_app.py
 """
 
 import os
@@ -42,7 +28,6 @@ import joblib
 from PIL import Image
 from mnist_cnn_classifier import MnistCnnClassifier
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
-
 import os
 import streamlit as st
 
@@ -50,8 +35,6 @@ import streamlit as st
 code_dir = os.path.dirname(__file__)
 
 model_path = os.path.join(code_dir,'mnist_cnn.h5')
-st.write(model_path)
-
 
 # Load the trained model
 model = MnistCnnClassifier()
@@ -130,8 +113,62 @@ def resize_and_center(img):
     return centered_img
 
 class DigitRecognitionProcessor(VideoProcessorBase):
+    """
+    A video processing class for real-time handwritten digit recognition using OpenCV and a trained CNN model.
+
+    This class processes each video frame from a WebRTC stream, extracts digit contours, preprocesses them, 
+    resizes and centers them to 28x28 pixels, and then classifies the digit using a trained CNN model.
+    The predicted digit is drawn on the video frame.
+
+    Methods
+    -------
+    recv(frame)
+        Processes a single video frame, detects and classifies digits, and returns the modified frame.
+
+    Parameters
+    ----------
+    frame : av.VideoFrame
+        A single video frame from the WebRTC stream in BGR format.
+
+    Returns
+    -------
+    av.VideoFrame
+        The modified video frame with detected digits outlined and labeled with predictions.
+
+    Notes
+    -----
+    - The function ignores small or edge-bound contours to reduce false detections.
+    - The digit extraction includes padding to maintain aspect ratio before resizing.
+    - The CNN model is used to predict the digit, and the result is overlaid on the frame.
+    """
     def recv(self, frame):
-        st.write("✅ Processing frame...")  # Debugging: Check if frames are received
+        """
+    Processes a single video frame to detect, extract, and classify handwritten digits in real time.
+
+    This method receives a video frame, preprocesses it, detects digit contours, extracts and resizes the digit, 
+    then classifies it using a trained CNN model. The recognized digit is drawn on the frame before returning it.
+
+    Parameters
+    ----------
+    frame : av.VideoFrame
+        A single video frame from the WebRTC stream in BGR format.
+
+    Returns
+    -------
+    av.VideoFrame
+        The modified video frame with detected digits outlined and labeled with predictions.
+
+    Processing Steps
+    ----------------
+    1. Converts the frame to a NumPy array.
+    2. Preprocesses the image (grayscale, thresholding, noise removal).
+    3. Detects contours and extracts digit regions.
+    4. Ignores small or edge-bound contours to reduce false detections.
+    5. Resizes and centers the digit within a 28x28 pixel frame.
+    6. Classifies the digit using a CNN model.
+    7. Overlays the predicted digit and bounding box on the frame.
+    8. Returns the modified frame.
+    """
         img = frame.to_ndarray(format="bgr24")
 
         # Preprocess Image
@@ -163,42 +200,21 @@ class DigitRecognitionProcessor(VideoProcessorBase):
 # Initialize Streamlit UI
 st.markdown("<h3 style='text-align: center;'>Sifferigenkänning i realtid</h3>", unsafe_allow_html=True)
 
-st.sidebar.header("Kontroller")
-
-# Use session state to track webcam status
-if "capture_active" not in st.session_state:
-    st.session_state.capture_active = False
-
-# Buttons to start and stop webcam
-if st.sidebar.button("Starta kameran"):
-    st.session_state.capture_active = True
-
-if st.sidebar.button("Stoppa Kameran"):
-    st.session_state.capture_active = False
-
-# Create a placeholder for the video feed
-frame_holder = st.empty()
-
 # Webcam loop
-webrtc_streamer(
+ctx = webrtc_streamer(
     key="webcam",
     mode=WebRtcMode.SENDRECV,
     video_processor_factory=DigitRecognitionProcessor,
-    async_processing=True,  # Prevents blocking
-    rtc_configuration={
-        "iceServers": [
-            {"urls": ["stun:stun1.l.google.com:19302"]},  # Reliable Google STUN
-            {"urls": ["stun:stun.stunprotocol.org"]},  # Alternative STUN
-            {"urls": ["stun:stun.voipbuster.com"]},  # Extra STUN
-            {
-                "urls": "turn:relay.backups.cz",  # TURN relay for NAT/firewall traversal
-                "username": "webrtc",
-                "credential": "webrtc"
-            }
-        ],
-        "iceTransportPolicy": "relay"  # Force WebRTC to use relay mode (fixes strict network issues)
-    },
-    media_stream_constraints={"video": True, "audio": False}  # Disable audio for performance
+    async_processing=True,
+    media_stream_constraints={
+        "video": {
+            "width": {"min": 320, "ideal": 640, "max": 640},
+            "height": {"min": 240, "ideal": 480, "max": 480},
+            "frameRate": {"ideal": 15, "max": 15}  # Lower frame rate for performance
+        },
+        "audio": False
+    }
 )
+
 
 
