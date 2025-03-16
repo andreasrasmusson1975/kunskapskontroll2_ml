@@ -198,7 +198,7 @@ class DigitRecognitionProcessor(VideoProcessorBase):
 
 
 # Initialize Streamlit UI
-st.markdown("<h3 style='text-align: center;'>Sifferigenkänning i realtid</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>Sifferigenkänning i realtid (Andreas Rasmusson)</h3>", unsafe_allow_html=True)
 
 # Webcam loop
 ctx = webrtc_streamer(
