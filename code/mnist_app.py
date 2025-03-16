@@ -184,6 +184,6 @@ webrtc_streamer(
     key="webcam",
     mode=WebRtcMode.SENDRECV,
     video_processor_factory=DigitRecognitionProcessor,
-    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-    media_stream_constraints={"video": {"facingMode": "user"}, "audio": False},  # Force webcam selection
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.stunprotocol.org"]}]},
+    media_stream_constraints={"video": {"deviceId": {"exact": "default"}}, "audio": False},  # Force webcam selection
 )
