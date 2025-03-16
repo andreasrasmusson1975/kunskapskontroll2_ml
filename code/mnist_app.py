@@ -34,13 +34,17 @@ Example
 >>> python -m streamlit run app.py
 """
 
-
+import os
 import streamlit as st
 import cv2
 import numpy as np
 import joblib
 from PIL import Image
 from mnist_cnn_classifier import MnistCnnClassifier
+
+st.write("Current Working Directory:", os.getcwd())
+st.write("Files in Directory:")
+st.write(os.listdir())
 
 # Load the trained model
 model = MnistCnnClassifier()
