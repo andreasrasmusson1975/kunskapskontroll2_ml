@@ -212,7 +212,7 @@ ctx = webrtc_streamer(
             "frameRate": {"ideal": 15, "max": 15}  # Lower frame rate for performance
         },
         "audio": False
-    }
+    },
     rtc_configuration={
     "iceServers": [
         {"urls": ["stun:stun.l.google.com:19302"]},
