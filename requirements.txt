@@ -1,7 +1,6 @@
 setuptools
 joblib==1.4.2
 matplotlib==3.7.2
-numpy==1.24.3
 numpy==1.24.4
 opencv_python==4.11.0.86
 pandas==2.0.3
