@@ -49,6 +49,7 @@ import streamlit as st
 code_dir = os.path.dirname(__file__)
 
 model_path = os.path.join(code_dir,'mnist_cnn.h5')
+st.write(model_path)
 
 
 # Load the trained model
