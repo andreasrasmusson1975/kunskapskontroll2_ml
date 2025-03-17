@@ -4,17 +4,6 @@ Real-Time Digit Recognition with Streamlit and OpenCV.
 This application uses OpenCV and Streamlit to capture a live webcam feed, detect handwritten 
 digits in real-time, preprocess them, and classify them using a trained CNN model. 
 
-Features
---------
-- Captures video frames from a webcam.
-- Preprocesses images for digit recognition:
-  - Converts to grayscale.
-  - Binarizes using Otsu's thresholding.
-  - Applies morphological operations to clean noise.
-- Extracts digit contours and resizes them to 28x28 pixels.
-- Uses a trained CNN model to predict the digit.
-- Displays the bounding box and predicted digit on the video stream.
-
 Example
 -------
 >>> python -m streamlit run mnist_app.py
